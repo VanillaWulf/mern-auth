@@ -1,11 +1,11 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import mongoose from "mongoose";
-import { validationResult } from "express-validator";
+import { registerValidation, loginValidation } from './validations/validation.js';
+import checkAuth from "./utils/checkAuth.js";
+import * as UserController from "./constollers/userControllers.js";
 
-import { registerValidation } from './validations/auth.js'
 
-mongoose.connect('mongodb+srv://admin:72405060@cluster0.vhuv29j.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://admin:72405060@cluster0.vhuv29j.mongodb.net/blog?retryWrites=true&w=majority')
     .then(() => {
         console.log(('db ok'))
     }).catch((err) => {console.log('err'+ err)});
@@ -18,27 +18,11 @@ app.get('/', (req, res) => {
     res.send('hallo world');
 });
 
-app.post('/auth/register', registerValidation, (req, res) => {
-    const error = validationResult(req);
-    if(error.isEmpty()) {
-        return res.status(400).json(error.array())
-    }
+app.post('/auth/register', registerValidation, UserController.register);
 
-    res.json({
-        success: true
-    })
-});
+app.post('/auth/login', loginValidation, UserController.login);
 
-app.post('/auth/login', (req,res) => {
-    const token = jwt.sign({
-        email: req.body.email,
-        fullName: 'Any'
-    }, 'secretHash');
-    res.json({
-        success: true,
-        token
-    })
-});
+app.get('/auth/me', checkAuth, UserController.getMe);
 
 app.listen(4444, (err) =>{
     if (err) {
