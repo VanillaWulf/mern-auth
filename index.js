@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import { registerValidation, loginValidation } from './validations/validation.js';
 import checkAuth from "./utils/checkAuth.js";
 import * as UserController from "./constollers/userControllers.js";
-
+import * as PostController from "./constollers/postController.js";
+import {postCreateValidation} from "./validations/validation.js";
 
 mongoose.connect('mongodb+srv://admin:72405060@cluster0.vhuv29j.mongodb.net/blog?retryWrites=true&w=majority')
     .then(() => {
@@ -23,6 +24,12 @@ app.post('/auth/register', registerValidation, UserController.register);
 app.post('/auth/login', loginValidation, UserController.login);
 
 app.get('/auth/me', checkAuth, UserController.getMe);
+
+app.get('/posts', PostController.getAll);
+app.post('/posts', checkAuth, postCreateValidation, PostController.create);
+app.get('/posts/:id', PostController.getOne);
+app.delete('/posts/:id', checkAuth, PostController.remove);
+app.patch('/posts/:id', checkAuth, PostController.update);
 
 app.listen(4444, (err) =>{
     if (err) {
