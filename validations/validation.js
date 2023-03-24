@@ -7,7 +7,6 @@ export const registerValidation = [
     body('avatar', 'неверная ссылка').optional().isURL()
 ];
 
-
 export const loginValidation = [
     body('email', 'неверный формат почты').isEmail(),
     body('password','пароль должен быть длинее 5 символов').isLength({min: 5}),
