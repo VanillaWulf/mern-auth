@@ -11,26 +11,39 @@ export const getAll = async (req, res) => {
     }
 };
 
+export const getLastTags = async (req, res) => {
+    try {
+        const posts = await PostModel.find().limit(5).exec();
+
+        const tags = posts.map(item => item.tags).flat().slice(0, 5)
+        res.json(tags);
+    } catch (e) {
+        res.status(500).json({
+            message: 'no article in bd'
+        });
+    }
+}
+
 export const getOne = async (req, res) => {
     try {
         const postId = req.params.id;
 
         try {
-            const post = await PostModel.findOneAndUpdate({_id: postId},
+            const post = await PostModel.findOneAndUpdate({ _id: postId },
                 {
-                    $inc: {viewCount: 1}
+                    $inc: { viewCount: 1 }
                 }, {
-                    returnDocument: 'after'
-                },
-            );
-            if(!post) {
+                returnDocument: 'after'
+            },
+            ).populate('user');
+            if (!post) {
                 return res.status(404).json({
                     message: 'no article in bd'
                 }
-            )}
+                )
+            }
 
             return res.json(post);
-
         } catch (e) {
             return res.status(500).json({
                 message: 'error in find article'
@@ -106,7 +119,7 @@ export const create = async (req, res) => {
 
         const post = await doc.save();
         res.json(post);
-    } catch(e) {
+    } catch (e) {
         res.status(500).json({
             message: 'no article added'
         });
