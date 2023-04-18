@@ -15,6 +15,6 @@ export const loginValidation = [
 export const postCreateValidation = [
     body('title', 'маленький title').isLength({ min: 5 }).isString(),
     body('text', 'маленький text').isLength({ min: 10 }).isString(),
-    body('tags').optional().isString(),
+    body('tags').optional().isArray(),
     body('imageUrl', 'неверная ссылка на каритнку').optional().isString()
 ];
