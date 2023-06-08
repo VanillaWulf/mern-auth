@@ -9,10 +9,15 @@ import { UserController, PostController } from "./constollers/index.js";
 import { postCreateValidation } from "./validations/validation.js";
 
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect('mongodb+srv://admin:72405060@cluster0.vhuv29j.mongodb.net/blog?retryWrites=true&w=majority')
     .then(() => {
         console.log(('db ok'))
     }).catch((err) => { console.log('err' + err) });
+
+// mongoose.connect(process.env.MONGO_URL)
+//     .then(() => {
+//         console.log(('db ok'))
+//     }).catch((err) => { console.log('err' + err) });
 
 const app = express();
 
@@ -57,7 +62,7 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 
 app.use('/uploads', express.static('uploads'));
 
-app.listen(4444, (err) => {
+app.listen(5000, (err) => {
     if (err) {
         return console.log(err);
     }
